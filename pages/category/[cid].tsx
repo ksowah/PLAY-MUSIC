@@ -1,11 +1,15 @@
+/* eslint-disable @next/next/no-img-element */
+import PopOver from "../../components/PopOver";
 import Head from "next/head"
 import { useRouter } from "next/router"
+import { GrAdd } from 'react-icons/gr';
 
 const Category = () => {
 
   const router = useRouter()
 
   const {image} = router.query
+  console.log(image);
   
 
   return (
@@ -17,9 +21,21 @@ const Category = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+     
+     
+
       <div className="py-[4rem] px-[1rem] md:px-[6rem]">
       <p className="font-medium">TSIB</p>
-      <div className="w-full h-[30rem] bg-cover" style={{backgroundImage: `url(${image})`}} ></div>
+      <div className="m-8 md:m-28 md:mx-44">
+        <img src={image?.toString()} alt="cover"/>
+      </div>
+
+      <h1 className="text-center font-medium my-12">PRODUCTIVE TEAM</h1>
+      <PopOver />
+      </div>
+
+      <div>
+
       </div>
     </div>
   )
