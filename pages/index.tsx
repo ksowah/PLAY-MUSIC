@@ -5,8 +5,11 @@ import SectionTwo from '../components/SectionTwo'
 import SectionThree from '../components/SectionThree'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import { useEffect } from 'react'
+import axios from "axios"
 
-const Home: NextPage = () => {
+const Home: NextPage = () => {  
+
   return (
     <div >
       <Head>
