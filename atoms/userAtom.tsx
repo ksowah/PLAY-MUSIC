@@ -1,6 +1,11 @@
 import { atom } from "recoil"
 
-export const userState = atom({
-    key: "userState",
+export const sessionState = atom({
+    key: "sessionState",
     default: null,
+})
+
+export const tokenState = atom({
+    key: "tokenState",
+    default: "",
 })
