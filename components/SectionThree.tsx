@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig } from "axios"
 import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
 import { userState } from "../atoms/userAtom"
+import axios from "../utils/axios"
 
 
 const SectionThree = () => {
@@ -10,6 +10,7 @@ const SectionThree = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [token, setToken] = useState("")
+  const [session, setSession] = useState(null)
 
   const [user, setUser] = useRecoilState(userState)
 
@@ -33,18 +34,22 @@ const SectionThree = () => {
     e.preventDefault()
 
     try {
-      const {data} = await axios.post("http://localhost:8000/users", {
-        name,
-        email,
-        password
+      const {data} = await axios({
+        url: "users",
+        method: "POST",
+        data: {
+          name,
+          email,
+          password
+        }
       })
       console.log(data)
       setUser(data.user)
       setToken(data.user.token)
-      alert("User created")
+      localStorage.setItem("session", "active")
 
     } catch (error: any) {
-      console.log(error)
+      console.log(error.response.data.message)
     }
   }
 
@@ -52,35 +57,65 @@ const SectionThree = () => {
     e.preventDefault()
 
     try {
-      const {data} = await axios.post("http://localhost:8000/users/login", {
-        email,
-        password
+      const {data} = await axios({
+        url: "/users/login",
+        method: "POST",
+        data: {
+          email,
+          password
+        },
       })
       console.log(data)
       setUser(data)
       setToken(data.token)
-      alert("User logged in")
+      localStorage.setItem("session", "active")
       
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      console.log(error.response.data.message)
       
     }
   }
 
   const getAllUsers = async () => {
     try {
-      const {data} = await axios.get("http://localhost:8000/users", {
+      const {data} = await axios({
+        url: "users",
+        method: "GET",
         headers: {
           Authorization : `Bearer ${token}`
-        },
+        }
       })
       console.log(data)
       alert("All users")
       
     } catch (error: any) {
-      console.log(error.message)
+      console.log(error.response.data.message)
     }
   }
+
+  const refreshToken = async () => {
+    try {
+      const { data } = await axios({
+        url: "refresh",
+        method: "GET",
+      })
+      
+      console.log(data.token)
+      setToken(data.token)
+      
+    } catch (error: any) {
+      console.log(error.response.data)      
+    }
+  }
+
+// useEffect(() => {
+//   refreshToken()
+//   if (localStorage.getItem("session") == "active") {
+//     setInterval( refreshToken, 25000)
+//   }
+// }, [])
+
+
 
   
 
@@ -112,11 +147,11 @@ const SectionThree = () => {
             <button className="bg-[#1762A7] py-1 rounded w-full mt-4" onClick={Login}>Join Now</button>
         </form>
 
-        {
-          user && <button onClick={getAllUsers}>Get all users</button>
-        }
+        <button onClick={getAllUsers}>Get all users</button>
+        
 
       </div>
+
     </div>
   )
 }
