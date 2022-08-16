@@ -4,9 +4,9 @@ const SectionOne = () => {
 
   return (
     <>
-    <div className="h-screen flex bg-[#2F303A] bg-cover" style={{backgroundImage: `url(https://ksets.netlify.app/play/bg-circles.svg)` }}>
+    <div className="h-screen flex bg-[#2F303A] bg-cover" style={{backgroundImage: `url(/assets/play/bg-circles.svg)` }}>
         <div className="h-full flex-1 ">
-            <img src={"https://ksets.netlify.app/play/woman.svg"} 
+            <img src={"/assets/play/woman.svg"} 
                 className="h-[30rem] absolute bottom-0 left-6 md:left-20" alt="woman"
             />
         </div>
