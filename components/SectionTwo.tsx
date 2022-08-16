@@ -25,9 +25,9 @@ const SectionTwo = () => {
         <div className="flex-1 flex flex-col items-start mx-6 md:mx-24 justify-center">
             <h1 className="text-5xl mb-16">Discover new music</h1>
             <div className="flex items-center space-x-4"> 
-             <Badge image="https://ksets.netlify.app/play/microphone.svg" title="Charts"/>
-             <Badge image="https://ksets.netlify.app/play/album.svg" title="Albums"/>
-             <Badge image="https://ksets.netlify.app/play/more.svg" title="More"/>
+             <Badge image="/assets/play/microphone.svg" title="Charts"/>
+             <Badge image="/assets/play/album.svg" title="Albums"/>
+             <Badge image="/assets/play/more.svg" title="More"/>
             </div>
             <p className="text-2xl mt-8">
               By joining you can benefit by listening to the latest album released
@@ -38,13 +38,13 @@ const SectionTwo = () => {
             <div className="h-[20rem] w-[20rem]">
 
                 <div className="flex h-1/2">
-                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(https://ksets.netlify.app/play/burner.jpg)`}}></div>
-                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(https://ksets.netlify.app/play/stormzy.jpg)`}}></div>
+                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(/assets/play/burner.jpg)`}}></div>
+                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(/assets/play/stormzy.jpg)`}}></div>
                 </div>
 
                 <div className="flex h-1/2">
-                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(https://ksets.netlify.app/play/drake.jpg)`}}></div>
-                    <div className="flex-1 bg-cover bg-center" style={{backgroundImage: `url(https://ksets.netlify.app/play/kendrick.jpg)`}}></div>
+                    <div className="flex-1 bg-cover" style={{backgroundImage: `url(/assets/play/drake.jpg)`}}></div>
+                    <div className="flex-1 bg-cover bg-center" style={{backgroundImage: `url(/assets/play/kendrick.jpg)`}}></div>
                 </div>
             </div>
         </div>
