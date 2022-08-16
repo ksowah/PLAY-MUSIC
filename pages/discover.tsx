@@ -28,34 +28,34 @@ const Discover = () => {
         {/* CARDS */}
         <div className="relative space-y-32 pb-24">
             <div className="m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/evolve")} src="https://ksets.netlify.app/play/evolve.svg" alt="evolve"/>
+                <img className="cursor-pointer" onClick={() => router.push("/category/evolve")} src="/assets/play/evolve.svg" alt="evolve"/>
             </div>
 
             <div className="absolute px-12">
-                <img src="https://ksets.netlify.app/play/bottom-menu.svg" alt="evolve"/>
+                <img src="/assets/play/bottom-menu.svg" alt="evolve"/>
             </div>
 
             <div className="m-8 md:m-28 md:mx-44">
                 <img className="cursor-pointer" onClick={() => router.push({
                     pathname: "/category/cybergirl",
-                    query: {image: "https://ksets.netlify.app/play/Cybergrl.svg"}
+                    query: {image: "/assets/play/Cybergrl.svg"}
                 })} 
-                src="https://ksets.netlify.app/play/Cybergrl.svg" alt="Cybergirl"/>
+                src="/assets/play/Cybergrl.svg" alt="Cybergirl"/>
             </div>
 
             <div className=" m-8 md:m-28 md:mx-44">
                 <img className="cursor-pointer" onClick={() => router.push({
                     pathname: "/category/when-we-all",
-                    query: {image: "https://ksets.netlify.app/play/when-we-all.svg"}
-            })} src="https://ksets.netlify.app/play/when-we-all.svg" alt="when we all"/>
+                    query: {image: "/assets/play/when-we-all.svg"}
+            })} src="/assets/play/when-we-all.svg" alt="when we all"/>
             </div>
 
             <div className=" m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/lover")} src="https://ksets.netlify.app/play/lover.svg" alt="lover"/>
+                <img className="cursor-pointer" onClick={() => router.push("/category/lover")} src="/assets/play/lover.svg" alt="lover"/>
             </div>
 
             <div className=" m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/cyberpunk")} src="https://ksets.netlify.app/play/cyberpunk.svg" alt="cyberpunk"/>
+                <img className="cursor-pointer" onClick={() => router.push("/category/cyberpunk")} src="/assets/play/cyberpunk.svg" alt="cyberpunk"/>
             </div>
         </div>
 
