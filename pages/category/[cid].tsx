@@ -1,15 +1,51 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import PopOver from "../../components/PopOver";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { GrAdd } from "react-icons/gr";
 import AudioControl from "../../components/AudioControl";
+import { useEffect, useState } from "react";
+import axios from "../../utils/axios";
+import type, { GetServerSideProps, NextPage } from "next";
+import { useRecoilValue } from "recoil";
+import { tokenState } from "../../atoms/userAtom";
 
-const Category = () => {
+
+
+const Category: NextPage = () => {
 	const router = useRouter();
+	const [data, setData] = useState([])
+	const [title, setTitle] = useState("")
+	const [artist, setArtist] = useState("")
+
+	const token = useRecoilValue(tokenState)
 
 	const { image } = router.query;
-	console.log(image);
+
+	const getSongs = async () => {
+		try {
+			const { data } = await axios({
+				url: "songs",
+				method: "GET",
+				headers: {
+					Authorization : `Bearer ${token}`
+				  }
+			})
+	
+			console.log(data)
+			setData(data)
+			
+		} catch (error) {
+			console.log(error);
+			
+		}
+	}
+
+	useEffect(() => {
+		getSongs()
+	}, [])
+	
 
 	return (
 		<div className="min-h-screen bg-[#030303] text-gray-50">
@@ -30,10 +66,15 @@ const Category = () => {
 			</div>
 
 			<div>
-        <AudioControl />
-      </div>
+				{
+					data.map((item: any, idx: any) => (
+						<AudioControl key={idx} artist={item.artist} song={item.track} title={item.title} />
+					))
+				}
+			</div>
 		</div>
 	);
 };
 
 export default Category;
+
