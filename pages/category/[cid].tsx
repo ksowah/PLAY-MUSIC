@@ -22,10 +22,10 @@ const Category: NextPage = () => {
 
 	const { image } = router.query;
 
-	const getSongs = async () => {
+	const getSongs = async () => {		
 		try {
-
-			if(session) {
+			console.log(session)
+			
 				const { data } = await axios({
 					url: "songs",
 					method: "GET",
@@ -35,20 +35,12 @@ const Category: NextPage = () => {
 				})
 				setData(data)
 
-			}else{
-				console.log("there is no session");
-				
-			}
 			
 		} catch (error) {
 			console.log(error);
 			
 		}
 	}
-
-	useEffect(() => {
-		getSongs()
-	}, [])
 
 	const refreshToken = async () => {
 		try {
@@ -68,6 +60,7 @@ const Category: NextPage = () => {
 	
 	  useEffect(() => {
 		refreshToken()
+		getSongs()
 		if (localStorage.getItem("session") === "active") {
 		  setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
 		}
