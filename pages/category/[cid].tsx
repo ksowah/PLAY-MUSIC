@@ -3,14 +3,12 @@
 import PopOver from "../../components/PopOver";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { GrAdd } from "react-icons/gr";
 import AudioControl from "../../components/AudioControl";
 import { useEffect, useState } from "react";
 import axios from "../../utils/axios";
-import type, { GetServerSideProps, NextPage } from "next";
-import { useRecoilValue } from "recoil";
-import { tokenState } from "../../atoms/userAtom";
-
+import { NextPage } from "next";
+import { useRecoilState } from "recoil";		
+import { sessionState, tokenState } from "../../atoms/userAtom";
 
 
 const Category: NextPage = () => {
@@ -19,22 +17,28 @@ const Category: NextPage = () => {
 	const [title, setTitle] = useState("")
 	const [artist, setArtist] = useState("")
 
-	const token = useRecoilValue(tokenState)
+	const [token, setToken] = useRecoilState(tokenState)
+  	const [session, setSession] = useRecoilState(sessionState)
 
 	const { image } = router.query;
 
 	const getSongs = async () => {
 		try {
-			const { data } = await axios({
-				url: "songs",
-				method: "GET",
-				headers: {
-					Authorization : `Bearer ${token}`
-				  }
-			})
-	
-			console.log(data)
-			setData(data)
+
+			if(session) {
+				const { data } = await axios({
+					url: "songs",
+					method: "GET",
+					headers: {
+						Authorization : `Bearer ${token}`
+					  }
+				})
+				setData(data)
+
+			}else{
+				console.log("there is no session");
+				
+			}
 			
 		} catch (error) {
 			console.log(error);
@@ -45,6 +49,30 @@ const Category: NextPage = () => {
 	useEffect(() => {
 		getSongs()
 	}, [])
+
+	const refreshToken = async () => {
+		try {
+		  const { data } = await axios({
+			url: "refresh",
+			method: "GET",
+		  })
+		  
+		  setToken(data.token)
+		  setSession(data.user)		  
+		  
+		} catch (error: any) {
+		  console.log(error.response.data)      
+		}
+	  }
+	
+	
+	  useEffect(() => {
+		refreshToken()
+		if (localStorage.getItem("session") === "active") {
+		  setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
+		}
+	  }, [])
+	  
 	
 
 	return (
