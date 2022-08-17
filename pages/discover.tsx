@@ -28,7 +28,10 @@ const Discover = () => {
         {/* CARDS */}
         <div className="relative space-y-32 pb-24">
             <div className="m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/evolve")} src="/assets/play/evolve.svg" alt="evolve"/>
+                <img className="cursor-pointer" onClick={() => router.push({
+                    pathname:"/category/evolve",
+                    query: {image: "/assets/play/evolve.svg"}
+                    })} src="/assets/play/evolve.svg" alt="evolve"/>
             </div>
 
             <div className="absolute px-12">
@@ -51,11 +54,17 @@ const Discover = () => {
             </div>
 
             <div className=" m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/lover")} src="/assets/play/lover.svg" alt="lover"/>
+                <img className="cursor-pointer" onClick={() => router.push({
+                    pathname: "/category/lover",
+                    query: "/assets/play/lover.svg",
+                    })} src="/assets/play/lover.svg" alt="lover"/>
             </div>
 
             <div className=" m-8 md:m-28 md:mx-44">
-                <img className="cursor-pointer" onClick={() => router.push("/category/cyberpunk")} src="/assets/play/cyberpunk.svg" alt="cyberpunk"/>
+                <img className="cursor-pointer" onClick={() => router.push({
+                    pathname: "/category/cyberpunk",
+                    query: "/assets/play/cyberpunk.svg",
+                    })} src="/assets/play/cyberpunk.svg" alt="cyberpunk"/>
             </div>
         </div>
 
