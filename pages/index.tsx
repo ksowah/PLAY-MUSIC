@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import SectionOne from '../components/SectionOne'
@@ -6,9 +7,41 @@ import SectionThree from '../components/SectionThree'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useEffect } from 'react'
-import axios from "axios"
+import { useRecoilState } from 'recoil'
+import { sessionState, tokenState } from '../atoms/userAtom'
+import axios from '../utils/axios'
 
-const Home: NextPage = () => {  
+const Home: NextPage = () => { 
+  
+  const [token, setToken] = useRecoilState(tokenState)
+  const [session, setSession] = useRecoilState(sessionState)
+
+  const refreshToken = async () => {
+    try {
+      const { data } = await axios({
+        url: "refresh",
+        method: "GET",
+      })
+      
+      setToken(data.token)
+      setSession(data.user)
+
+      console.log(data.token);
+      
+      
+    } catch (error: any) {
+      console.log(error.response.data)      
+    }
+  }
+
+
+  useEffect(() => {
+    refreshToken()
+    if (localStorage.getItem("session") === "active") {
+      setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
+    }
+  }, [])
+  
 
   return (
     <div >
