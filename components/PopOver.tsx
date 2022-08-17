@@ -1,14 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
 import { Dialog, Transition } from "@headlessui/react";
-import Image from "next/image";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { Fragment, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { sessionState, tokenState } from "../atoms/userAtom"
+import { storage } from "../firebase";
+import axios from "../utils/axios";
 
 export default function MyModal() {
 	let [isOpen, setIsOpen] = useState(false);
 	const [selectedMusicImage, setSelectedMusicImage] = useState<any>(null);
 	const [selectedSong, setSelectedSong] = useState<any>(null);
+	const [title, setTitle] = useState("")
+	const [artist, setArtist] = useState("")
+	const [imageUrl, setImageUrl] = useState("")
+	const [songUrl, setSongUrl] = useState("")
 	const musicImageRef: any = useRef(null);
 	const songRef: any = useRef(null);
+	const session: any = useRecoilValue(sessionState)
+	const token = useRecoilValue(tokenState)
 
 	const coverImage = "/assets/disc.png";
 
@@ -41,6 +51,60 @@ export default function MyModal() {
 	};
 
 	
+	const getImageUrl = async () => {
+		const imageRef = ref(storage, `song/${session?.id}/image`);
+
+		if (selectedMusicImage) {
+			await uploadString(imageRef, selectedMusicImage, "data_url").then(async () => {
+				const downloadURL = await getDownloadURL(imageRef);
+				setImageUrl(downloadURL)				
+			});
+		}
+
+	}
+
+	const getTrackUrl = async () => {
+		const trackRef = ref(storage, `track/${session?.id}/song`);
+
+		if (selectedSong) {
+			await uploadString(trackRef, selectedSong, "data_url").then(async () => {
+				const downloadURL = await getDownloadURL(trackRef);
+				setSongUrl(downloadURL)
+			});
+		}
+
+	}
+
+	const createTrack = async () => {
+
+		try {
+			getImageUrl()
+			getTrackUrl()
+	
+			const addTrack = await axios({
+				url: "songs",
+				method: "POST",
+				data: {
+					title,
+					artist,
+					image: imageUrl,
+					track: songUrl,
+					user: session.email,
+				},
+				headers: {
+					Authorization : `Bearer ${token}`
+				  }
+			})
+	
+			console.log(addTrack.data)
+			
+		} catch (error) {
+			console.log(error)
+			
+		}
+		
+	}
+
 
 	return (
 		<>
@@ -105,11 +169,13 @@ export default function MyModal() {
 														type="text"
 														placeholder="song title"
 														className="outline-none mb-2 mt-2 w-full p-1 px-2 border-b border-gray-400 bg-gray-100"
+														onChange={(e) => setTitle(e.target.value)}
 													/>
 													<input
 														type="text"
-														placeholder="song title"
+														placeholder="artist name"
 														className="outline-none mb-2 w-full p-1 px-2 border-b border-gray-400 bg-gray-100"
+														onChange={(e) => setArtist(e.target.value)}
 													/>
 
 													<div className="flex items-center space-x-2">
@@ -128,14 +194,14 @@ export default function MyModal() {
 														/>
 
 														<button
-															onClick={() => musicImageRef.current.click()}
+															onClick={() => songRef.current.click()}
 															className="w-[6rem] mt-2 text-gray-50 font-medium p-2 rounded-lg bg-gray-900"
 														>
 															add song
 														</button>
 														<input
 															type="file"
-															accept="audio/mpeg3"
+															accept="audio/*"
 															hidden
 															onChange={getSong}
 															ref={songRef}
@@ -146,7 +212,7 @@ export default function MyModal() {
 											</div>
 										</div>
 
-										<button className="w-[16rem] text-gray-50 p-2 rounded-lg bg-blue-600 hover:bg-blue-700 focus:bg-blue-600">
+										<button onClick={createTrack} className="w-[16rem] font-medium text-gray-50 p-2 rounded-lg bg-blue-600 hover:bg-blue-700 focus:bg-blue-600">
 											{" "}
 											Add Track{" "}
 										</button>
