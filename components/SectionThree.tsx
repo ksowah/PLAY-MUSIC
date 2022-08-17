@@ -76,37 +76,11 @@ const SectionThree = () => {
         }
       })
 
-      console.log(session)
-      
       
     } catch (error: any) {
       console.log(error.response.data.message)
     }
   }
-
-
-  // generate a refreshd token
-  const refreshToken = async () => {
-    try {
-      const { data } = await axios({
-        url: "refresh",
-        method: "GET",
-      })
-      
-      setToken(data.token)
-      setSession(data.user)
-      
-    } catch (error: any) {
-      console.log(error.response.data)      
-    }
-  }
-
-useEffect(() => {
-  refreshToken()
-  if (localStorage.getItem("session") === "active") {
-    setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
-  }
-}, [])
 
 
 
