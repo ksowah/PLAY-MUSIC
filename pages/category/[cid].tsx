@@ -12,34 +12,38 @@ import { sessionState, tokenState } from "../../atoms/userAtom";
 
 
 const Category: NextPage = () => {
-	const router = useRouter();
+	const router = useRouter()
 	const [data, setData] = useState([])
-	const [title, setTitle] = useState("")
-	const [artist, setArtist] = useState("")
 
 	const [token, setToken] = useRecoilState(tokenState)
   	const [session, setSession] = useRecoilState(sessionState)
 
 	const { image } = router.query;
 
+	console.log("token>>", token)
+
 	const getSongs = async () => {		
 		try {
-			console.log(session)
-			
-				const { data } = await axios({
-					url: "songs",
-					method: "GET",
-					headers: {
-						Authorization : `Bearer ${token}`
-					  }
-				})
-				setData(data)
 
+				console.log("token>>", token)
+				
+					const { data } = await axios({
+						url: "songs",
+						method: "GET",
+						headers: {
+							Authorization : `Bearer ${token}`
+						  }
+					})
+					setData(data)
+			
 			
 		} catch (error) {
 			console.log(error);
 			
 		}
+
+		console.log("get songs");
+		
 	}
 
 	const refreshToken = async () => {
@@ -53,19 +57,21 @@ const Category: NextPage = () => {
 		  setSession(data.user)		  
 		  
 		} catch (error: any) {
-		  console.log(error.response.data)      
+		  console.log(error)      
 		}
 	  }
 	
 	
 	  useEffect(() => {
 		refreshToken()
-		getSongs()
 		if (localStorage.getItem("session") === "active") {
 		  setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
 		}
 	  }, [])
-	  
+
+	  useEffect(() => {
+		setTimeout( getSongs, 2000)
+	  }, [])
 	
 
 	return (

@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import { NextPage } from "next";
 import Head from "next/head"
 import { useRouter } from "next/router";
 import { BiMenuAltRight } from 'react-icons/bi';
 
-const Discover = () => {
+const Discover: NextPage = () => {
 
     const router = useRouter()
 
