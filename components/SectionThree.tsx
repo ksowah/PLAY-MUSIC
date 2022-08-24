@@ -60,7 +60,7 @@ const SectionThree = () => {
       localStorage.setItem("session", "active")
       
     } catch (error: any) {
-      console.log(error.response.data.message)
+      console.log(error)
       
     }
   }
