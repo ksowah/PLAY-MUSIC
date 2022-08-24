@@ -15,47 +15,45 @@ const Category: NextPage = () => {
 	const router = useRouter()
 	const [data, setData] = useState([])
 
-	const [token, setToken] = useRecoilState(tokenState)
+	// const [token, setToken] = useRecoilState(tokenState)
   	const [session, setSession] = useRecoilState(sessionState)
 
 	const { image } = router.query;
 
-	console.log("token>>", token)
+	// console.log("token>>", token)
 
-	const getSongs = async () => {		
+	const getSongs = async (token: string) => {		
 		try {
 
-				console.log("token>>", token)
-				
 					const { data } = await axios({
 						url: "songs",
 						method: "GET",
 						headers: {
-							Authorization : `Bearer ${token}`
-						  }
+							Authorization : `Bearer ${token}`, 
+						  },
 					})
 					setData(data)
-			
 			
 		} catch (error) {
 			console.log(error);
 			
 		}
-
-		console.log("get songs");
 		
 	}
 
 	const refreshToken = async () => {
 		try {
-		  const { data } = await axios({
+		 await axios({
 			url: "refresh",
 			method: "GET",
+
 		  })
-		  
-		  setToken(data.token)
-		  setSession(data.user)		  
-		  
+		  .then((response) => {
+			getSongs(response?.data?.token)
+		})
+
+		  console.log("Token generated 🪝");
+
 		} catch (error: any) {
 		  console.log(error)      
 		}
@@ -65,12 +63,11 @@ const Category: NextPage = () => {
 	  useEffect(() => {
 		refreshToken()
 		if (localStorage.getItem("session") === "active") {
-		  setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
+		  setInterval( () => {
+			refreshToken()
+			console.log("session updated 🔥🔥")
+		  }, 4 * 60 * 1000) // every 4 mins
 		}
-	  }, [])
-
-	  useEffect(() => {
-		setTimeout( getSongs, 2000)
 	  }, [])
 	
 
