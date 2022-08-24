@@ -25,8 +25,7 @@ const Home: NextPage = () => {
       
       setToken(data.token)
       setSession(data.user)
-
-      console.log(data.token);
+      console.log("Token generated");
       
       
     } catch (error: any) {
@@ -38,7 +37,10 @@ const Home: NextPage = () => {
   useEffect(() => {
     refreshToken()
     if (localStorage.getItem("session") === "active") {
-      setInterval( refreshToken, 4 * 60 * 1000) // every 4 mins
+      setInterval( () => {
+        refreshToken()
+        console.log("Session updated 🔥🔥")        
+      }, 4 * 60 * 1000) // every 4 mins
     }
   }, [])
   
