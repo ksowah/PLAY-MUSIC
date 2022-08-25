@@ -2,8 +2,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { Fragment, useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { sessionState, tokenState } from "../atoms/userAtom"
+import { useRecoilState, useRecoilValue } from "recoil";
+import { sessionState, tokenState, tracks } from "../atoms/userAtom"
 import { storage } from "../firebase";
 import axios from "../utils/axios";
 
@@ -13,12 +13,13 @@ export default function MyModal() {
 	const [selectedSong, setSelectedSong] = useState<any>(null);
 	const [title, setTitle] = useState("")
 	const [artist, setArtist] = useState("")
-	const [imageUrl, setImageUrl] = useState("")
-	const [songUrl, setSongUrl] = useState("")
+	const [addedTracks, setAddedTracks] = useRecoilState(tracks)
 	const musicImageRef: any = useRef(null);
 	const songRef: any = useRef(null);
 	const session: any = useRecoilValue(sessionState)
 	const token = useRecoilValue(tokenState)
+
+	const id = new Date().getTime()
 
 	const coverImage = "/assets/disc.png";
 
@@ -51,52 +52,64 @@ export default function MyModal() {
 	};
 
 	
-	const getImageUrl = async () => {
-		const imageRef = ref(storage, `song/${session?.id}/image`);
-
-		if (selectedMusicImage) {
-			await uploadString(imageRef, selectedMusicImage, "data_url").then(async () => {
-				const downloadURL = await getDownloadURL(imageRef);
-				setImageUrl(downloadURL)				
-			});
-		}
-
-	}
-
-	const getTrackUrl = async () => {
-		const trackRef = ref(storage, `track/${session?.id}/song`);
-
-		if (selectedSong) {
-			await uploadString(trackRef, selectedSong, "data_url").then(async () => {
-				const downloadURL = await getDownloadURL(trackRef);
-				setSongUrl(downloadURL)
-			});
-		}
-
-	}
-
 	const createTrack = async () => {
 
+		let tracks: any = []
+
+		let image: string = ""
+		let trackUrl: string = ""
+
 		try {
-			getImageUrl()
-			getTrackUrl()
+			const imageRef = ref(storage, `song/${id}/image`)
+			const trackRef = ref(storage, `track/${id}/song`);
+
+			if (selectedSong) {
+				await uploadString(trackRef, selectedSong, "data_url").then(async () => {
+					const downloadURL: any = await getDownloadURL(trackRef);
+					trackUrl = downloadURL
+				});
+			}
+
+			if (selectedMusicImage) {
+				await uploadString(imageRef, selectedMusicImage, "data_url").then(async () => {
+					const downloadURL: any = await getDownloadURL(imageRef)
+					image = downloadURL
+				})
+			}
+
+
+			if(selectedSong && selectedMusicImage){
+				await axios({
+				   url: "songs",
+				   method: "POST",
+				   data: {
+					   title,
+					   artist,
+					   image,
+					   track: trackUrl,
+					   user: session?.email,
+				   },
+				   headers: {
+					   Authorization : `Bearer ${token}`
+					 }
+			   })
+			   .then((res) => {
+				   console.log(res?.data)
+				   tracks.push({
+					   title,
+					   artist,
+					   image,
+					   track: trackUrl,
+					   user: session?.email,
+				   })
+				   setAddedTracks(addedTracks.concat(tracks).reverse())
+			   })
+			}
+
 	
-			const addTrack = await axios({
-				url: "songs",
-				method: "POST",
-				data: {
-					title,
-					artist,
-					image: imageUrl,
-					track: songUrl,
-					user: session.email,
-				},
-				headers: {
-					Authorization : `Bearer ${token}`
-				  }
-			})
-	
-			console.log(addTrack.data)
+			setIsOpen(false)
+			setSelectedMusicImage(null)
+			setSelectedSong(null)
 			
 		} catch (error) {
 			console.log(error)
@@ -104,8 +117,7 @@ export default function MyModal() {
 		}
 		
 	}
-
-
+	
 	return (
 		<>
 			<div className="fixed inset-0 flex items-center justify-center">
