@@ -8,31 +8,28 @@ import { useEffect, useState } from "react";
 import axios from "../../utils/axios";
 import { NextPage } from "next";
 import { useRecoilState } from "recoil";		
-import { sessionState, tokenState } from "../../atoms/userAtom";
+import { sessionState, tokenState, tracks } from "../../atoms/userAtom";
 
 
 const Category: NextPage = () => {
 	const router = useRouter()
-	const [data, setData] = useState([])
-
-	// const [token, setToken] = useRecoilState(tokenState)
+	const [token, setToken] = useRecoilState(tokenState)
   	const [session, setSession] = useRecoilState(sessionState)
+	const [allTracks, setAllTracks] = useRecoilState(tracks)
 
 	const { image } = router.query;
 
-	// console.log("token>>", token)
-
-	const getSongs = async (token: string) => {		
+	const getSongs = async (token_sub: string) => {		
 		try {
 
 					const { data } = await axios({
 						url: "songs",
 						method: "GET",
 						headers: {
-							Authorization : `Bearer ${token}`, 
+							Authorization : `Bearer ${token_sub}`, 
 						  },
 					})
-					setData(data)
+					setAllTracks(data?.reverse())
 			
 		} catch (error) {
 			console.log(error);
@@ -50,6 +47,8 @@ const Category: NextPage = () => {
 		  })
 		  .then((response) => {
 			getSongs(response?.data?.token)
+			setToken(response?.data?.token)
+			setSession(response.data.user)
 		})
 
 		  console.log("Token generated 🪝");
@@ -89,10 +88,10 @@ const Category: NextPage = () => {
 				<PopOver />
 			</div>
 
-			<div>
+			<div className="pb-20">
 				{
-					data.map((item: any, idx: any) => (
-						<AudioControl key={idx} artist={item.artist} song={item.track} title={item.title} />
+					allTracks.map((track: any, idx: any) => (
+						<AudioControl key={idx} artist={track.artist} song={track.track} title={track.title} image={track.image} />
 					))
 				}
 			</div>
