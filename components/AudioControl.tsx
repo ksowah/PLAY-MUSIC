@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from "react"
 import { BsFillPlayFill, BsPauseFill } from 'react-icons/bs';
 
@@ -6,10 +7,11 @@ interface Props {
   song: string,
   title: string,
   artist: string,
+  image: string
 }
 
 
-const AudioControl = ({song, title, artist,}: Props) => {
+const AudioControl = ({song, title, artist, image}: Props) => {
 
     const audioElement: any = useRef()
     const clickRef: any = useRef()
@@ -25,6 +27,8 @@ const AudioControl = ({song, title, artist,}: Props) => {
         const durationPlayed = audioElement.current.currentTime
 
         setTimePlayed(((durationPlayed / duration) * 100))
+
+        if(durationPlayed === duration) setIsPlaying(false)
         
     }
 
@@ -46,22 +50,24 @@ const AudioControl = ({song, title, artist,}: Props) => {
     
 
   return (
-    <div className="flex items-center justify-center space-x-6 py-20">
+    <div className="flex items-center justify-center space-x-4 py-6">
 
         <audio onTimeUpdate={onPlaying} src={song} ref={audioElement} />
 
-        <div className="h-10 w-10 rounded-lg bg-white"></div>
-
-        <div className="text-xs">
-            <p className="font-bold text-gray-50">{title}</p>
-            <p className="text-gray-300">{artist}</p>
+        <div className="h-10 w-10 rounded-lg overflow-hidden">
+          <img src={image} alt="song image" className="h-full w-full object-cover"/>
         </div>
 
-        <div onClick={() => setIsPlaying(!isPlaying)} className="h-7 w-7 z-50 flex items-center justify-center cursor-pointer bg-gray-700 rounded-lg">
+        <div className="text-xs w-20">
+            <p className="font-bold text-gray-50 truncate">{title}</p>
+            <p className="text-gray-300 truncate">{artist}</p>
+        </div>
+
+        <div onClick={() => setIsPlaying(!isPlaying)} className="h-7 w-7 z-10 flex items-center justify-center cursor-pointer bg-gray-700 rounded-lg">
               {isPlaying ? <BsPauseFill /> : <BsFillPlayFill />}
         </div>
 
-        <div className="w-[55%] h-[2px] bg-gray-700 cursor-pointer z-50" onClick={checkWidth} ref={clickRef}>
+        <div className="w-[45%] h-[2px] bg-gray-700 cursor-pointer z-10" onClick={checkWidth} ref={clickRef}>
           <div className={`relative h-full bg-gray-50`} style={{width: `${timePlayed}%`}}>
               <div className="h-2 w-2 rounded-full bg-gray-50 absolute right-0 -bottom-[3px]"></div>
           </div>
