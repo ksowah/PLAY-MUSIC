@@ -6,7 +6,7 @@ import SectionTwo from '../components/SectionTwo'
 import SectionThree from '../components/SectionThree'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { sessionState, tokenState } from '../atoms/userAtom'
 import axios from '../utils/axios'
@@ -43,6 +43,13 @@ const Home: NextPage = () => {
       }, 4 * 60 * 1000) // every 4 mins
     }
   }, [])
+
+  const scroll = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+  })
+  };
   
 
   return (
@@ -54,10 +61,10 @@ const Home: NextPage = () => {
       </Head>
 
       <main className='text-gray-200'>
-        <Header />
+        <Header/>
         <SectionOne />
         <SectionTwo />
-        <SectionThree />
+        <SectionThree scroll={scroll} />
         <Footer />
       </main>
     </div>
