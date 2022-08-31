@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil'
 import { sessionState, tokenState } from '../atoms/userAtom'
 import axios from '../utils/axios'
 
+
 const Header = () => {
 
   const [session, setSession] = useRecoilState<any>(sessionState)
@@ -37,7 +38,6 @@ const Header = () => {
     console.log(session)
     
   }
-
 
   return (
     <div className='w-full absolute flex items-center justify-between p-4 md:px-16'>
